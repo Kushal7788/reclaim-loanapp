@@ -50,7 +50,7 @@ router.post("/update/:checkId", async (req, res) => {
       }),
     ],
   });
-  const { callbackId, reclaimUrl } = request;
+  const reclaimUrl = await request.getReclaimUrl();
   console.log('reclaim URL: ', reclaimUrl);
   await check.save();
   res.status(201).json({ url: reclaimUrl });
