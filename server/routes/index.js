@@ -22,6 +22,8 @@ router.get("/getId", async (request, response) => {
   });
 });
 
+
+
 router.post("/update/:checkId", async (req, res) => {
   console.log("update called")
   const check = await Check.findOne({ checkId: req.params.checkId });
@@ -36,19 +38,7 @@ router.post("/update/:checkId", async (req, res) => {
       new reclaim.CustomProvider({
         provider: "uidai-aadhar",
         payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-phone",
-        payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-uid",
-        payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-address",
-        payload: {},
-      }),
+      })
     ],
   });
   console.log("Reclaim Request", request)
