@@ -52,11 +52,11 @@ router.post("/update/:checkId", async (req, res) => {
     ],
   });
   console.log("Reclaim Request", request)
-  const { callbackId, reclaimUrl } = request;
-  console.log("callbackId", callbackId)
-  console.log("reclaimUrl", reclaimUrl)
+  // const { callbackId, reclaimUrl } = request;
+  console.log("callbackId", request.callbackId)
+  console.log("reclaimUrl", request.reclaimUrl)
   await check.save();
-  res.status(201).json({ url: reclaimUrl });
+  res.status(201).json({ url: request.reclaimUrl });
 });
 
 router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
