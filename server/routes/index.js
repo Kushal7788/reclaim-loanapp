@@ -27,7 +27,7 @@ router.post("/update/:checkId", async (req, res) => {
   const check = await Check.findOne({ checkId: req.params.checkId });
   if (!check)
     return res.status(401).json({ message: "Invalid URL, please check." });
-  console.log(reclaim)
+  console.log(process.env.BASE_URL)
   const request = reclaim.requestProofs({
     title: "Reclaim Protocol",
     baseCallbackUrl: process.env.BASE_URL + "/update/proof",
@@ -53,8 +53,8 @@ router.post("/update/:checkId", async (req, res) => {
   });
   console.log("Reclaim Request", request)
   // const { callbackId, reclaimUrl } = request;
-  console.log("callbackId", request.callbackId)
-  console.log("reclaimUrl", request.reclaimUrl)
+  // console.log("callbackId", request.callbackId)
+  console.log("reclaimUrl", request.reclaimUrl, request.template)
   await check.save();
   res.status(201).json({ url: request.reclaimUrl });
 });
