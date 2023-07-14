@@ -6,10 +6,13 @@ function App() {
   const [checkId, setCheckId] = useState("");
   const navigate = useNavigate();
   const handleClick = async () => {
-    const response = await fetch(`${apiUrl}/getId`);
-    const data = await response.json();
-    console.log(data);
-    setCheckId(data.checkId);
+    try{
+      const response = await fetch(`${apiUrl}/getId`);
+      const data = await response.json();
+      setCheckId(data.checkId);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

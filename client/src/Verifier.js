@@ -9,6 +9,7 @@ export const Verifier = () => {
   let { checkId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const [qrcode, setQrcode] = useState(false);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [aadhar, setAadhar] = useState("");
@@ -29,7 +30,6 @@ export const Verifier = () => {
       const res = await fetch(url, options);
       const data = await res.json();
       setClaimUrl(data.url);
-      console.log(claimUrl);
     } catch (err) {
       console.log(err);
     }
@@ -40,15 +40,22 @@ export const Verifier = () => {
       const res = await fetch(`${apiUrl}/fetch/${checkId}`);
       const data = await res.json();
       setData(data.data);
-      if(data.data?.proofs[0]?.parameters?.name)
-        setName(data.data?.proofs[0]?.parameters?.name);
-      if(data.data?.proofs[0]?.parameters?.mobile)
-        setMobile(data.data?.proofs[0]?.parameters?.mobile);
-      if(data.data?.proofs[0]?.parameters?.aadhar)
-        setAadhar(data.data?.proofs[0]?.parameters?.aadhar);
-      if(data.data?.proofs[0]?.parameters?.address)
-        setAddress(data.data?.proofs[0]?.parameters?.address);
-
+      if(data)
+      {
+        const new_data = data.data?.proofParams;
+        if(new_data){
+          for(let ele of new_data){
+            if(ele?.name)
+              setName(ele.name);
+            if(ele?.mobile)
+              setMobile(ele.mobile);
+            if(ele?.uid)
+              setAadhar(ele.uid);
+            if(ele?.address)
+              setAddress(ele.address);
+          }
+        }
+      }
     } catch (err) {
       console.log(err);
     }
@@ -71,6 +78,11 @@ export const Verifier = () => {
     postData();
     setInterval(fetchData, 5000);
   }, []);
+
+  useEffect(() => {
+    if(!qrcode)
+      postData();
+  }, [qrcode]);
 
   return (
     <div className="">
