@@ -26,54 +26,61 @@ router.post("/update/:checkId", async (req, res) => {
   const check = await Check.findOne({ checkId: req.params.checkId });
   if (!check)
     return res.status(401).json({ message: "Invalid URL, please check." });
-
-  const request = reclaim.requestProofs({
-    title: "Reclaim Protocol",
-    baseCallbackUrl: process.env.BASE_URL + "/update/proof",
-    callbackId: check.checkId,
-    requestedProofs: [
-      new reclaim.CustomProvider({
-        provider: "uidai-aadhar",
-        payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-phone",
-        payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-uid",
-        payload: {},
-      }),
-      new reclaim.CustomProvider({
-        provider: "uidai-address",
-        payload: {},
-      }),
-    ],
-  });
-  const reclaimUrl = await request.getReclaimUrl();
-  console.log('reclaim URL: ', reclaimUrl);
-  await check.save();
-  res.status(201).json({ url: reclaimUrl });
+  try {
+    const request = reclaim.requestProofs({
+      title: "Reclaim Protocol",
+      baseCallbackUrl: process.env.BASE_URL + "/proof/update",
+      callbackId: check.checkId,
+      requestedProofs: [
+        new reclaim.CustomProvider({
+          provider: "uidai-aadhar",
+          payload: {},
+        }),
+        new reclaim.CustomProvider({
+          provider: "uidai-phone",
+          payload: {},
+        }),
+        new reclaim.CustomProvider({
+          provider: "uidai-uid",
+          payload: {},
+        }),
+        new reclaim.CustomProvider({
+          provider: "uidai-address",
+          payload: {},
+        }),
+      ],
+    });
+    const reclaimUrl = await request.getReclaimUrl();
+    await check.save();
+    res.status(201).json({ url: reclaimUrl });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-router.post("/update/proof", bodyParser.text("*/*"), async (req, res) => {
-  const check = await Check.findOne({ checkId: req.query.id });
-  if (!check) return res.status(401).send("<h1>Unable to update Proof</h1>");
-  check.data = {
-    ...check.data,
-    proofs: JSON.parse(Object.keys(req.body)[0]).proofs,
-  };
-  await check.save();
-  const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
-    check.data.proofs
-  );
-  if (isProofsCorrect) {
+router.post("/proof/update", bodyParser.text("*/*"), async (req, res) => {
+    const check = await Check.findOne({ checkId: req.query.id });
+    if (!check) return res.status(401).send("<h1>Unable to update Proof</h1>");
     check.data = {
       ...check.data,
-      proofParams: check.data.proofs.map((proof) => proof.parameters),
+      proofs: JSON.parse(Object.keys(req.body)[0]).proofs,
     };
-  }
-  res.status(201).send("<h1>Proof was generated</h1>");
+    check.data = {
+      ...check.data,
+      proofParams: check.data.proofs.map((proof) => JSON.parse(proof.parameters)),
+    };
+    await check.save();
+    const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
+      check.data.proofs
+    );
+    if (isProofsCorrect) {
+      check.data = {
+        ...check.data,
+        proofParams: check.data.proofs.map((proof) => JSON.parse(proof.parameters)),
+      };
+    };
+    res.status(201).send("<h1>Proof was generated</h1>");
 });
 
 router.get("/fetch/:checkId", async (req, res) => {
