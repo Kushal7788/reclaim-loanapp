@@ -120,7 +120,7 @@ export const Verifier = () => {
                 Share this to person for validating their Indentity
               </p>
             </div>
-            {claimUrl !== null && (
+            {claimUrl !== null && claimUrl !== undefined && (
                 <div className="flex flex-col justify-center items-center gap-4 text-center w-full mt-12">
                   <p class="sm:text-3xl hidden md:block text-2xl font-medium title-font mb-4 text-gray-900">
                     Scan in Reclaim App
