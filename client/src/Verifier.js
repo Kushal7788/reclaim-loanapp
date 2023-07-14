@@ -13,7 +13,8 @@ export const Verifier = () => {
   const [mobile, setMobile] = useState("");
   const [aadhar, setAadhar] = useState("");
   const [address, setAddress] = useState("");
-  const [claimUrl, setClaimUrl] = useState(null);
+  const [claimUrl, setClaimUrl] = useState("");
+  const [intervalId, setIntervalId] = useState(null);
 
   const postData = async () => {
     try {
@@ -80,10 +81,14 @@ export const Verifier = () => {
   }, []);
 
   useEffect(() => {
-    if(!claimUrl || claimUrl === undefined)
-      setInterval(postData, 7000);
-    else
-      clearInterval(postData);
+    if(!claimUrl || claimUrl === undefined){
+      var timer = setInterval(function() {
+        postData();
+        if (claimUrl && claimUrl !== undefined) {
+          clearInterval(timer);
+        }
+      },7000);
+    }
   }, [claimUrl]);
 
   return (
