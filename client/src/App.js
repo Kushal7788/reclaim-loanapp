@@ -48,8 +48,7 @@ function App() {
                 prove Identity using ZK
               </h1>
               <p class="mb-8 leading-relaxed">
-                ScamChecker is a new way to prove Identity using ZK. Verify your client credentials in a secure way using Reclaim Protocol based on secure ZK Proofs. Click on Verify Credentials to get started.
-                After Verification is completed, the client details will be displayed on the screen. The details are based on the Aadhar Card of the client.
+              Applicant identity information extracted from Aadhar
               </p>
               <div class="flex justify-center">
                 <button
