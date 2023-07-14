@@ -9,7 +9,6 @@ export const Verifier = () => {
   let { checkId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [qrcode, setQrcode] = useState(false);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [aadhar, setAadhar] = useState("");
@@ -29,7 +28,8 @@ export const Verifier = () => {
       };
       const res = await fetch(url, options);
       const data = await res.json();
-      setClaimUrl(data.url);
+      if(data.url && data.url !== undefined)
+        setClaimUrl(data.url);
     } catch (err) {
       console.log(err);
     }
@@ -80,9 +80,11 @@ export const Verifier = () => {
   }, []);
 
   useEffect(() => {
-    if(!qrcode)
-      postData();
-  }, [qrcode]);
+    if(!claimUrl || claimUrl === undefined)
+      setInterval(postData, 7000);
+    else
+      clearInterval(postData);
+  }, [claimUrl]);
 
   return (
     <div className="">

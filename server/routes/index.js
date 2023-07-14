@@ -51,6 +51,8 @@ router.post("/update/:checkId", async (req, res) => {
       ],
     });
     const reclaimUrl = await request.getReclaimUrl();
+    if (!reclaimUrl)
+      return res.status(500).json({ message: "Internal Server Error" });
     await check.save();
     res.status(201).json({ url: reclaimUrl });
   } catch (error) {
