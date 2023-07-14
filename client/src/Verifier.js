@@ -320,14 +320,6 @@ export const Verifier = () => {
           </a>
           <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
             Scam Checker
-            <a
-              href="https://twitter.com/prrthamm"
-              class="text-gray-700 ml-1 cursor-pointer"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              @krs
-            </a>
           </p>
           <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
             <a
