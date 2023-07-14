@@ -13,8 +13,8 @@ export const Verifier = () => {
   const [mobile, setMobile] = useState("");
   const [aadhar, setAadhar] = useState("");
   const [address, setAddress] = useState("");
-  const [claimUrl, setClaimUrl] = useState("");
-  const [intervalId, setIntervalId] = useState(null);
+  const [claimUrl, setClaimUrl] = useState(null);
+  const [claimUrlCalled, setClaimUrlCalled] = useState(false);
 
   const postData = async () => {
     try {
@@ -29,8 +29,10 @@ export const Verifier = () => {
       };
       const res = await fetch(url, options);
       const data = await res.json();
-      if(data.url && data.url !== undefined)
+      if(res.status === 201)
         setClaimUrl(data.url);
+      else
+        setClaimUrl(undefined);
     } catch (err) {
       console.log(err);
     }
@@ -76,20 +78,17 @@ export const Verifier = () => {
   };
 
   useEffect(() => {
-    postData();
-    setInterval(fetchData, 5000);
-  }, []);
-
-  useEffect(() => {
-    if(!claimUrl || claimUrl === undefined){
-      var timer = setInterval(function() {
-        postData();
-        if (claimUrl && claimUrl !== undefined) {
-          clearInterval(timer);
-        }
-      },7000);
+    if(claimUrl === undefined)
+      postData();
+    if(claimUrl === null && !claimUrlCalled){
+      setClaimUrlCalled(true);
+      postData();
     }
   }, [claimUrl]);
+
+  useEffect(() => {
+    setInterval(fetchData, 5000);
+  }, []);
 
   return (
     <div className="">
@@ -120,7 +119,7 @@ export const Verifier = () => {
                 Share this to person for validating their Indentity
               </p>
             </div>
-            {claimUrl !== null && claimUrl !== undefined && (
+            {claimUrl !== null && claimUrl !== "" && claimUrl !== undefined && (
                 <div className="flex flex-col justify-center items-center gap-4 text-center w-full mt-12">
                   <p class="sm:text-3xl hidden md:block text-2xl font-medium title-font mb-4 text-gray-900">
                     Scan in Reclaim App
