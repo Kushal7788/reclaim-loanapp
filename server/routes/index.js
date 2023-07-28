@@ -73,15 +73,15 @@ router.post("/proof/update", bodyParser.text("*/*"), async (req, res) => {
       proofParams: check.data.proofs.map((proof) => JSON.parse(proof.parameters)),
     };
     await check.save();
-    const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
-      check.data.proofs
-    );
-    if (isProofsCorrect) {
-      check.data = {
-        ...check.data,
-        proofParams: check.data.proofs.map((proof) => JSON.parse(proof.parameters)),
-      };
-    };
+    // const isProofsCorrect = await reclaim.verifyCorrectnessOfProofs(
+    //   check.data.proofs
+    // );
+    // if (isProofsCorrect) {
+    //   check.data = {
+    //     ...check.data,
+    //     proofParams: check.data.proofs.map((proof) => JSON.parse(proof.parameters)),
+    //   };
+    // };
     res.status(201).send("<h1>Proof was generated</h1>");
 });
 
